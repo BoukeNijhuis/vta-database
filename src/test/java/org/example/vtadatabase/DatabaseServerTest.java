@@ -36,25 +36,6 @@ public class DatabaseServerTest {
     }
 
     @Test
-    public void testDatabaseSchema() {
-        // Test that the schema and table exist
-        assertDoesNotThrow(() -> {
-            Connection connection = DriverManager.getConnection(databaseServer.getConnectionString(), "sa", "");
-
-            try (Statement stmt = connection.createStatement()) {
-                // Check if the users table exists
-                ResultSet rs = stmt.executeQuery(
-                        "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES " +
-                                "WHERE TABLE_SCHEMA = 'PUBLIC' AND TABLE_NAME = 'USERS'");
-
-                rs.next();
-                int count = rs.getInt(1);
-                assertTrue(count > 0, "Users table should exist in the database");
-            }
-        });
-    }
-
-    @Test
     public void testQueryOnUsersTable() {
         // Test that the schema and table exist
         assertDoesNotThrow(() -> {
