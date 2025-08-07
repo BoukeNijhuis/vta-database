@@ -1,31 +1,27 @@
 package org.example.vtadatabase;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DatabaseServerTest {
 
-    private final DatabaseServer databaseServer = new DatabaseServer();
+    private Connection connection;
 
     @BeforeEach
     public void setUp() throws SQLException {
-        databaseServer.createDatabase();
-    }
-
-    @AfterEach
-    public void tearDown() {
-        // Close connection and stop server
+        connection = new DatabaseServer().createDatabase();
     }
 
     @Test
     public void testDatabaseConnection() {
         assertDoesNotThrow(() -> {
-            Connection connection = DriverManager.getConnection(databaseServer.getConnectionString(), "sa", "");
             assertTrue(connection.isValid(5), "Database connection should be valid");
         });
     }
@@ -40,8 +36,6 @@ public class DatabaseServerTest {
 
     private void assertRowsInTable(String tableName, int expectedRows) {
         assertDoesNotThrow(() -> {
-            Connection connection = DriverManager.getConnection(databaseServer.getConnectionString(), "sa", "");
-
             try (Statement stmt = connection.createStatement()) {
                 ResultSet rs = stmt.executeQuery(
                         "select count(*) from demo." + tableName);

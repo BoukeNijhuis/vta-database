@@ -5,7 +5,6 @@ import java.sql.SQLException;
 public class VtaDatabaseApplication {
 
     public static void main(String[] args) throws SQLException {
-        DatabaseServer server = new DatabaseServer();
-        server.createDatabase();
+        new DatabaseServer().createDatabase();
     }
 }
