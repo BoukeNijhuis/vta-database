@@ -9,6 +9,7 @@ public class DatabaseServer {
 
     private Server server;
 
+//    private static final String connectionString = "jdbc:h2:mem:~/vtadb";
     private static final String connectionString = "jdbc:h2:tcp://localhost/~/vtadb";
     private static final String pathToSqlFile = "/src/main/resources/h2init.sql";
 
@@ -17,10 +18,8 @@ public class DatabaseServer {
 
         String workingDirectory = System.getProperty("user.dir");
         String scriptPath = workingDirectory + pathToSqlFile;
-        String connectionCreationString = String.format("%sINIT=RUNSCRIPT FROM '%s'", connectionString, scriptPath);
-
-        // create a connection == creating a database
-        DriverManager.getConnection(connectionCreationString, "sa", "");
+        String runScriptConnectionString = String.format("%s;INIT=RUNSCRIPT FROM '%s'", connectionString, scriptPath);
+        DriverManager.getConnection(runScriptConnectionString, "sa", "");
     }
 
     private Server startServer() throws SQLException {
