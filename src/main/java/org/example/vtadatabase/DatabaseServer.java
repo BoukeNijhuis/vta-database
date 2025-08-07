@@ -9,7 +9,6 @@ public class DatabaseServer {
 
     private Server server;
 
-//    private static final String connectionString = "jdbc:h2:mem:~/vtadb";
     private static final String connectionString = "jdbc:h2:tcp://localhost/~/vtadb";
     private static final String pathToSqlFile = "/src/main/resources/h2init.sql";
 
