@@ -31,16 +31,24 @@ public class DatabaseServerTest {
     }
 
     @Test
-    public void testQueryOnUsersTable() {
+    public void testRowsInTables() {
+        assertRowsInTable("client", 2);
+        assertRowsInTable("policy", 2);
+        assertRowsInTable("client_policy", 2);
+        assertRowsInTable("claim", 1);
+    }
+
+    private void assertRowsInTable(String tableName, int expectedRows) {
         assertDoesNotThrow(() -> {
             Connection connection = DriverManager.getConnection(databaseServer.getConnectionString(), "sa", "");
 
             try (Statement stmt = connection.createStatement()) {
                 ResultSet rs = stmt.executeQuery(
-                        "SELECT count(*) FROM clients");
+                        "select count(*) from demo." + tableName);
                 // forward the pointer to the first row
                 rs.next();
-                assertEquals(2, rs.getInt(1), "Users table should have 2 rows");
+                final String message = String.format("Table %s should have %d rows", tableName, expectedRows);
+                assertEquals(expectedRows, rs.getInt(1), message);
             }
         });
     }
