@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.*;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test class to verify database accessibility.
@@ -44,8 +43,10 @@ public class DatabaseServerTest {
             try (Statement stmt = connection.createStatement()) {
                 // Check if the users table exists
                 ResultSet rs = stmt.executeQuery(
-                        "SELECT COUNT(*) FROM USER");
+                        "SELECT COUNT(*) FROM USERS");
+                // forward the pointer to the first row
                 rs.next();
+                assertEquals(2, rs.getInt(1), "Users table should have 2 rows");
             }
         });
     }
