@@ -26,10 +26,10 @@ public class DatabaseServerTest {
 
     @Test
     public void testRowsInTables() {
-        assertRowsInTable("client", 5); // Updated row count for client table after adding one client
-        assertRowsInTable("policy", 3); // Policy types unchanged
-        assertRowsInTable("client_policy", 5); // Updated row count after adding one link
-        assertRowsInTable("claim", 24); // Updated row count after adding one claim
+        assertRowsInTable("client", 10);
+        assertRowsInTable("policy", 3);
+        assertRowsInTable("client_policy", 13); // Updated row count after giving three clients a second policy
+        assertRowsInTable("claim", 24);
     }
 
     private void assertRowsInTable(String tableName, int expectedRows) {
@@ -42,6 +42,21 @@ public class DatabaseServerTest {
                 final String message = String.format("Table %s should have %d rows, but found %d rows", tableName, expectedRows, rs.getInt(1));
                 System.out.println(message); // Added logging for debugging
                 assertEquals(expectedRows, rs.getInt(1), message);
+            }
+        });
+    }
+
+    @SuppressWarnings("SqlResolve")
+    @Test
+    public void testNoDuplicateClientPolicies() {
+        assertDoesNotThrow(() -> {
+            try (Statement stmt = connection.createStatement();
+                 ResultSet rs = stmt.executeQuery(
+                     "select client_id, policy_id, count(*) as cnt " +
+                     "from demo.client_policy " +
+                     "group by client_id, policy_id " +
+                     "having count(*) > 1")) {
+                assertFalse(rs.next(), "Expected no duplicate client-policy assignments, but found duplicates");
             }
         });
     }

@@ -15,7 +15,12 @@ values ('Jan Jansen', 'jan.jansen@gmail.com'),
        ('Piet Pietersen', 'piet@pietersen.nl'),
        ('Kees van Dijk', 'kees.vandijk@gmail.com'),
        ('Anna de Vries', 'anna.devries@example.com'),
-       ('Eva Bakker', 'eva.bakker@example.com'); -- New client added
+       ('Eva Bakker', 'eva.bakker@example.com'),
+       ('Olaf de Boer', 'olaf.deboer@example.com'),
+       ('Sophie van den Berg', 'sophie.vandenberg@example.com'),
+       ('Mark Sanders', 'mark.sanders@example.com'),
+       ('Linda Groot', 'linda.groot@example.com'),
+       ('Tom Jansen', 'tom.jansen@example.com'); -- Added five new clients
 
 
 create table policy
@@ -51,7 +56,23 @@ union all select (select id from client where name = 'Kees van Dijk'),
 union all select (select id from client where name = 'Anna de Vries'),
                  (select id from policy where name = 'Travel Insurance policy')
 union all select (select id from client where name = 'Eva Bakker'),
-                 (select id from policy where name = 'House Insurance policy'); -- Linking new client Eva Bakker to House Insurance policy
+                 (select id from policy where name = 'House Insurance policy')
+union all select (select id from client where name = 'Olaf de Boer'),
+                 (select id from policy where name = 'Car Insurance policy')
+union all select (select id from client where name = 'Sophie van den Berg'),
+                 (select id from policy where name = 'Travel Insurance policy')
+union all select (select id from client where name = 'Mark Sanders'),
+                 (select id from policy where name = 'House Insurance policy')
+union all select (select id from client where name = 'Linda Groot'),
+                 (select id from policy where name = 'Car Insurance policy')
+union all select (select id from client where name = 'Tom Jansen'),
+                 (select id from policy where name = 'Travel Insurance policy') -- Linked five new clients to existing policies
+union all select (select id from client where name = 'Olaf de Boer'),
+                 (select id from policy where name = 'Travel Insurance policy')
+union all select (select id from client where name = 'Sophie van den Berg'),
+                 (select id from policy where name = 'House Insurance policy')
+union all select (select id from client where name = 'Linda Groot'),
+                 (select id from policy where name = 'Travel Insurance policy');
 
 
 create table claim
