@@ -14,7 +14,8 @@ insert into client (name, email)
 values ('Jan Jansen', 'jan.jansen@gmail.com'),
        ('Piet Pietersen', 'piet@pietersen.nl'),
        ('Kees van Dijk', 'kees.vandijk@gmail.com'),
-       ('Anna de Vries', 'anna.devries@example.com');
+       ('Anna de Vries', 'anna.devries@example.com'),
+       ('Eva Bakker', 'eva.bakker@example.com'); -- New client added
 
 
 create table policy
@@ -44,7 +45,8 @@ insert into client_policy (client_id, policy_id)
 values (1, 1),
        (2, 2),
        (3, 1),
-       (4, 3); -- Assigning Anna de Vries to the Travel Insurance policy
+       (4, 3),
+       (5, 2); -- Linking new client Eva Bakker to House Insurance policy
 
 
 create table claim
@@ -80,4 +82,5 @@ values (1, '2025-08-01', 'parked my car against a tree'),
        (2, '2024-10-29', 'damage from neighbor''s fire'),
        (2, '2020-11-13', 'garage door damaged by car'),
        (3, '2025-09-01', 'car damaged by falling tree branch'),
-       (4, '2025-08-18', 'lost luggage during flight'); -- Added claim for Anna de Vries
+       (4, '2025-08-18', 'lost luggage during flight'),
+       (5, '2025-08-19', 'fake claim for testing'); -- Added claim for new client_policy
