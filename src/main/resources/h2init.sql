@@ -53,4 +53,24 @@ create table claim
 );
 
 insert into claim (client_policy_id, date, description)
-values (1, '2025-08-01', 'parked my car against a tree');
+values (1, '2025-08-01', 'parked my car against a tree'),
+       (1, '2020-02-15', 'rear-ended by another vehicle'),
+       (1, '2021-03-10', 'hail damage to car roof'),
+       (1, '2022-04-22', 'broken windshield from flying debris'),
+       (1, '2023-05-05', 'theft of car stereo'),
+       (1, '2024-06-18', 'scratched paint in parking lot'),
+       (1, '2020-07-30', 'flat tire from pothole'),
+       (1, '2021-08-12', 'engine fire after accident'),
+       (1, '2022-09-25', 'side mirror broken by cyclist'),
+       (1, '2023-10-14', 'car flooded during heavy rain'),
+       (2, '2020-01-20', 'water damage from burst pipe'),
+       (2, '2021-02-28', 'stolen bicycle from garage'),
+       (2, '2022-03-16', 'fire in kitchen'),
+       (2, '2023-04-09', 'roof damaged by storm'),
+       (2, '2024-05-21', 'window broken by vandalism'),
+       (2, '2020-06-11', 'flooded basement'),
+       (2, '2021-07-23', 'electrical short caused damage'),
+       (2, '2022-08-05', 'tree fell on house'),
+       (2, '2023-09-17', 'lost jewelry during move'),
+       (2, '2024-10-29', 'damage from neighbor''s fire'),
+       (2, '2020-11-13', 'garage door damaged by car');

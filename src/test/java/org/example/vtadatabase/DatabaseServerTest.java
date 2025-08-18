@@ -21,9 +21,7 @@ public class DatabaseServerTest {
 
     @Test
     public void testDatabaseConnection() {
-        assertDoesNotThrow(() -> {
-            assertTrue(connection.isValid(5), "Database connection should be valid");
-        });
+        assertDoesNotThrow(() -> assertTrue(connection.isValid(5), "Database connection should be valid"));
     }
 
     @Test
@@ -31,7 +29,7 @@ public class DatabaseServerTest {
         assertRowsInTable("client", 2);
         assertRowsInTable("policy", 2);
         assertRowsInTable("client_policy", 2);
-        assertRowsInTable("claim", 1);
+        assertRowsInTable("claim", 21);
     }
 
     private void assertRowsInTable(String tableName, int expectedRows) {
