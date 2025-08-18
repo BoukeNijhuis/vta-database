@@ -12,7 +12,8 @@ create table client
 
 insert into client (name, email)
 values ('Jan Jansen', 'jan.jansen@gmail.com'),
-       ('Piet Pietersen', 'piet@pietersen.nl');
+       ('Piet Pietersen', 'piet@pietersen.nl'),
+       ('Kees van Dijk', 'kees.vandijk@gmail.com');
 
 
 create table policy

@@ -26,7 +26,7 @@ public class DatabaseServerTest {
 
     @Test
     public void testRowsInTables() {
-        assertRowsInTable("client", 2);
+        assertRowsInTable("client", 3); // Updated expected row count for client table
         assertRowsInTable("policy", 2);
         assertRowsInTable("client_policy", 2);
         assertRowsInTable("claim", 21);
