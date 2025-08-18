@@ -13,7 +13,8 @@ create table client
 insert into client (name, email)
 values ('Jan Jansen', 'jan.jansen@gmail.com'),
        ('Piet Pietersen', 'piet@pietersen.nl'),
-       ('Kees van Dijk', 'kees.vandijk@gmail.com');
+       ('Kees van Dijk', 'kees.vandijk@gmail.com'),
+       ('Anna de Vries', 'anna.devries@example.com');
 
 
 create table policy
@@ -26,7 +27,8 @@ create table policy
 -- TODO rename to insurance?
 insert into policy (name, terms_url)
 values ('Car Insurance policy', 'https://www.nn.nl/car_insurance_policy.pdf'),
-       ('House Insurance policy', 'https://www.nn.nl/house_insurance_policy.pdf');
+       ('House Insurance policy', 'https://www.nn.nl/house_insurance_policy.pdf'),
+       ('Travel Insurance policy', 'https://www.nn.nl/travel_insurance_policy.pdf');
 
 
 create table client_policy
@@ -41,7 +43,8 @@ create table client_policy
 insert into client_policy (client_id, policy_id)
 values (1, 1),
        (2, 2),
-       (3, 1); -- Assigning Kees van Dijk to the Car Insurance policy
+       (3, 1),
+       (4, 3); -- Assigning Anna de Vries to the Travel Insurance policy
 
 
 create table claim
@@ -75,4 +78,6 @@ values (1, '2025-08-01', 'parked my car against a tree'),
        (2, '2022-08-05', 'tree fell on house'),
        (2, '2023-09-17', 'lost jewelry during move'),
        (2, '2024-10-29', 'damage from neighbor''s fire'),
-       (2, '2020-11-13', 'garage door damaged by car');
+       (2, '2020-11-13', 'garage door damaged by car'),
+       (3, '2025-09-01', 'car damaged by falling tree branch'),
+       (4, '2025-08-18', 'lost luggage during flight'); -- Added claim for Anna de Vries

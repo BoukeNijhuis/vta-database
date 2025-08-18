@@ -26,10 +26,10 @@ public class DatabaseServerTest {
 
     @Test
     public void testRowsInTables() {
-        assertRowsInTable("client", 3); // Correct row count for client table
-        assertRowsInTable("policy", 2); // Correct row count for policy table
-        assertRowsInTable("client_policy", 3); // Correct row count for client_policy table
-        assertRowsInTable("claim", 21); // Correct row count for claim table
+        assertRowsInTable("client", 4); // Updated row count for client table
+        assertRowsInTable("policy", 3); // Updated row count for policy table
+        assertRowsInTable("client_policy", 4); // Updated row count for client_policy table
+        assertRowsInTable("claim", 23); // Updated row count for claim table
     }
 
     private void assertRowsInTable(String tableName, int expectedRows) {
