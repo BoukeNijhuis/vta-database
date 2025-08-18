@@ -40,7 +40,8 @@ create table client_policy
 
 insert into client_policy (client_id, policy_id)
 values (1, 1),
-       (2, 2);
+       (2, 2),
+       (3, 1); -- Assigning Kees van Dijk to the Car Insurance policy
 
 
 create table claim

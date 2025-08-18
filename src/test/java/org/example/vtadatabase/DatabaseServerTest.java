@@ -26,10 +26,10 @@ public class DatabaseServerTest {
 
     @Test
     public void testRowsInTables() {
-        assertRowsInTable("client", 3); // Updated expected row count for client table
-        assertRowsInTable("policy", 2);
-        assertRowsInTable("client_policy", 2);
-        assertRowsInTable("claim", 21);
+        assertRowsInTable("client", 3); // Correct row count for client table
+        assertRowsInTable("policy", 2); // Correct row count for policy table
+        assertRowsInTable("client_policy", 3); // Correct row count for client_policy table
+        assertRowsInTable("claim", 21); // Correct row count for claim table
     }
 
     private void assertRowsInTable(String tableName, int expectedRows) {
@@ -39,7 +39,8 @@ public class DatabaseServerTest {
                         "select count(*) from demo." + tableName);
                 // forward the pointer to the first row
                 rs.next();
-                final String message = String.format("Table %s should have %d rows", tableName, expectedRows);
+                final String message = String.format("Table %s should have %d rows, but found %d rows", tableName, expectedRows, rs.getInt(1));
+                System.out.println(message); // Added logging for debugging
                 assertEquals(expectedRows, rs.getInt(1), message);
             }
         });
