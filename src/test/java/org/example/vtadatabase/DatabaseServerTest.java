@@ -40,7 +40,6 @@ public class DatabaseServerTest {
                 // forward the pointer to the first row
                 rs.next();
                 final String message = String.format("Table %s should have %d rows, but found %d rows", tableName, expectedRows, rs.getInt(1));
-                System.out.println(message); // Added logging for debugging
                 assertEquals(expectedRows, rs.getInt(1), message);
             }
         });
