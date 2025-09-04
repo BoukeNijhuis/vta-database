@@ -20,7 +20,8 @@ values ('Jan Jansen', 'jan.jansen@gmail.com'),
        ('Sophie van den Berg', 'sophie.vandenberg@example.com'),
        ('Mark Sanders', 'mark.sanders@example.com'),
        ('Linda Groot', 'linda.groot@example.com'),
-       ('Tom Jansen', 'tom.jansen@example.com'); -- Added five new clients
+       ('Tom Jansen', 'tom.jansen@example.com'), -- Added five new clients
+       ('Quincy Kramer', 'quincy.kramer@example.com'); -- Added 11th client
 
 
 create table policy
