@@ -21,15 +21,14 @@
         <url/>
     </scm>
     <properties>
-        <java.version>24</java.version>
-        <maven.compiler.source>24</maven.compiler.source>
-        <maven.compiler.target>24</maven.compiler.target>
-        <h2.version>2.1.214</h2.version>
+        <java.version>22</java.version>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
+        <h2.version>2.3.232</h2.version>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>3.8.4</quarkus.platform.version>
+        <quarkus.platform.version>3.26.2</quarkus.platform.version>
         <!-- Override jandex version to match available artifact -->
         <jandex.version>3.3.1</jandex.version>
-        <jupiter.version>5.13.3</jupiter.version>
     </properties>
 
     <dependencyManagement>
@@ -82,7 +81,8 @@
         <!-- Quarkus REST with JSON -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
+            <artifactId>quarkus-rest-jackson</artifactId>
+            <version>3.26.1</version>
         </dependency>
         <!-- Quarkus H2 JDBC driver extension for managed datasource (even though we use manual JDBC) -->
         <dependency>
