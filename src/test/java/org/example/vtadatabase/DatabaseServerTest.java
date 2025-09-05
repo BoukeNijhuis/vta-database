@@ -1,5 +1,6 @@
 package org.example.vtadatabase;
 
+import org.example.vtadatabase.infrastructure.persistence.DatabaseServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,9 +1,11 @@
-package org.example.vtadatabase;
+package org.example.vtadatabase.api;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import org.example.vtadatabase.api.dto.ClientDto;
+import org.example.vtadatabase.infrastructure.persistence.DatabaseServer;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
