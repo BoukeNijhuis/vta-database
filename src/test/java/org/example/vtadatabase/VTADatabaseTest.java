@@ -14,9 +14,25 @@ public class VTADatabaseTest {
                 .when().get("/clients")
                 .then()
                 .statusCode(200)
-                .body("size()", is(11))               // we currently have 11 clients
-                .body("[0].id", notNullValue())      // each entry has an id
-                .body("[0].name", notNullValue());   // and a name
+                .body("size()", is(11))
+                .body("[0].id", notNullValue())
+                .body("[0].name", notNullValue());
+    }
+
+    @Test
+    public void getClientById_returnsClient() {
+        given()
+                .when().get("/clients/1")
+                .then()
+                .statusCode(200);
+    }
+
+    @Test
+    public void getClientById_whenClientDoesNotExist_returns404() {
+        given()
+                .when().get("/clients/999999")
+                .then()
+                .statusCode(404);
     }
 }
 
