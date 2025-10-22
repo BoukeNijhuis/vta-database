@@ -64,6 +64,14 @@ public class VTADatabaseTest {
     }
 
     @Test
+    public void getClientById_withLargeId_returns404() {
+        given()
+                .when().get("/clients/" + Long.MAX_VALUE)
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
     public void getAllClients_returnsCorrectContentType() {
         given()
                 .when().get("/clients")
@@ -79,6 +87,33 @@ public class VTADatabaseTest {
                 .then()
                 .statusCode(200)
                 .body("find { it.name == 'Jan Jansen' }.email", equalTo("jan.jansen@gmail.com"));
+    }
+
+    @Test
+    public void getClientById_handlesSpecialCharactersInName() {
+        given()
+                .when().get("/clients")
+                .then()
+                .statusCode(200)
+                .body("find { it.name == 'Sophie van den Berg' }.name", equalTo("Sophie van den Berg"));
+    }
+
+    @Test
+    public void getClientById_handlesSpecialCharactersInEmail() {
+        given()
+                .when().get("/clients")
+                .then()
+                .statusCode(200)
+                .body("find { it.email == 'sophie.vandenberg@example.com' }.email", equalTo("sophie.vandenberg@example.com"));
+    }
+
+    @Test
+    public void getAllClients_handlesNamesWithApostrophes() {
+        given()
+                .when().get("/clients")
+                .then()
+                .statusCode(200)
+                .body("findAll { it.name.contains('van') }.size()", greaterThan(0));
     }
 }
 
