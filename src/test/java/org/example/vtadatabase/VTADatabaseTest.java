@@ -115,6 +115,29 @@ public class VTADatabaseTest {
                 .statusCode(200)
                 .body("findAll { it.name.contains('van') }.size()", greaterThan(0));
     }
+
+    @Test
+    public void updateClient_returnsOk() {
+        given()
+                .contentType("application/json")
+                .body("{\"name\":\"Updated Name\",\"email\":\"updated@example.com\"}")
+                .when().put("/clients/1")
+                .then()
+                .statusCode(200);
+    }
+
+    @Test
+    public void updateClient_returnsUpdatedData() {
+        given()
+                .contentType("application/json")
+                .body("{\"name\":\"Jane Doe\",\"email\":\"jane.doe@example.com\"}")
+                .when().put("/clients/2")
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(2))
+                .body("name", equalTo("Jane Doe"))
+                .body("email", equalTo("jane.doe@example.com"));
+    }
 }
 
 

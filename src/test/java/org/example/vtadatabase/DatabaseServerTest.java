@@ -1,5 +1,6 @@
 package org.example.vtadatabase;
 
+import io.quarkus.test.junit.QuarkusTest;
 import org.example.vtadatabase.infrastructure.persistence.DatabaseServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@QuarkusTest
 public class DatabaseServerTest {
 
     private Connection connection;
