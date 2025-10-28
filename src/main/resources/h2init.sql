@@ -5,9 +5,10 @@ set schema demo;
 
 create table client
 (
-    id    identity,
-    name  varchar not null,
-    email varchar not null
+    id      identity,
+    name    varchar not null,
+    email   varchar not null,
+    deleted boolean default false
 );
 
 insert into client (name, email)

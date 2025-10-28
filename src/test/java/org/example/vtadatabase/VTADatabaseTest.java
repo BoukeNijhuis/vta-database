@@ -4,10 +4,21 @@ import io.quarkus.test.junit.QuarkusTest;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
+import org.example.vtadatabase.infrastructure.persistence.DatabaseServer;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 public class VTADatabaseTest {
+
+    @BeforeEach
+    public void resetDatabase() throws Exception {
+        // Reset the initialized flag to force database re-initialization
+        java.lang.reflect.Field field = DatabaseServer.class.getDeclaredField("initialized");
+        field.setAccessible(true);
+        field.set(null, false);
+    }
+
     @Test
     public void getAllClients_returnsListOfClients() {
         given()
@@ -90,7 +101,7 @@ public class VTADatabaseTest {
     }
 
     @Test
-    public void getClientById_handlesSpecialCharactersInName() {
+    public void getAllClients_handlesSpecialCharactersInName() {
         given()
                 .when().get("/clients")
                 .then()
@@ -99,7 +110,7 @@ public class VTADatabaseTest {
     }
 
     @Test
-    public void getClientById_handlesSpecialCharactersInEmail() {
+    public void getAllClients_handlesSpecialCharactersInEmail() {
         given()
                 .when().get("/clients")
                 .then()
@@ -138,6 +149,40 @@ public class VTADatabaseTest {
                 .body("name", equalTo("Jane Doe"))
                 .body("email", equalTo("jane.doe@example.com"));
     }
+
+    @Test
+    public void deleteClient_returnsNoContent() {
+        given()
+                .when().delete("/clients/1")
+                .then()
+                .statusCode(204);
+    }
+
+    @Test
+    public void deleteClient_whenClientDoesNotExist_returns404() {
+        given()
+                .when().delete("/clients/999999")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    public void deleteClient_removesClientFromGetAllClients() {
+        // Use a known client ID from database initialization (11 clients total)
+        Long clientId = 5L;
+
+        // Delete the client
+        given()
+                .when().delete("/clients/" + clientId)
+                .then()
+                .statusCode(204);
+
+        // Verify client is removed from list (this is what makes it a true soft delete test)
+        given()
+                .when().get("/clients")
+                .then()
+                .statusCode(200)
+                .body("size()", is(10))  // 11 - 1 = 10
+                .body("find { it.id == " + clientId + " }", nullValue());
+    }
 }
-
-
