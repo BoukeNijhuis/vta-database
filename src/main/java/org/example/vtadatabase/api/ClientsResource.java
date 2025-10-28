@@ -21,22 +21,44 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * REST API resource for managing clients.
+ * Provides endpoints for CRUD operations on client data.
+ */
 @Path("/clients")
 public class ClientsResource {
+
+    private static final String SELECT_ALL_ACTIVE_CLIENTS =
+            "SELECT id, name, email FROM demo.client WHERE deleted = false ORDER BY id";
+    private static final String SELECT_CLIENT_BY_ID =
+            "SELECT id, name, email FROM demo.client WHERE id = ? AND deleted = false";
+    private static final String UPDATE_CLIENT =
+            "UPDATE demo.client SET name = ?, email = ? WHERE id = ? AND deleted = false";
+    private static final String SOFT_DELETE_CLIENT =
+            "UPDATE demo.client SET deleted = true WHERE id = ? AND deleted = false";
+
+    private static final String ERROR_LOADING_CLIENTS = "Failed to load clients";
+    private static final String ERROR_LOADING_CLIENT = "Failed to load client";
+    private static final String ERROR_UPDATING_CLIENT = "Failed to update client";
+    private static final String ERROR_DELETING_CLIENT = "Failed to delete client";
+    private static final String CLIENT_NOT_FOUND = "Client with id %d not found";
+
+    private final DatabaseServer databaseServer = new DatabaseServer();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<ClientDto> getAllClients() {
-        try (Connection connection = new DatabaseServer().createDatabase();
+        try (Connection connection = databaseServer.createDatabase();
              Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery("select id, name, email from demo.client where deleted = false order by id")) {
-            List<ClientDto> list = new ArrayList<>();
+             ResultSet rs = stmt.executeQuery(SELECT_ALL_ACTIVE_CLIENTS)) {
+
+            List<ClientDto> clients = new ArrayList<>();
             while (rs.next()) {
-                list.add(new ClientDto(rs.getLong("id"), rs.getString("name"), rs.getString("email")));
+                clients.add(mapToClientDto(rs));
             }
-            return list;
+            return clients;
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to load clients", e);
+            throw new RuntimeException(ERROR_LOADING_CLIENTS, e);
         }
     }
 
@@ -44,15 +66,18 @@ public class ClientsResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public ClientDto getClientById(@PathParam("id") Long id) {
-        try (Connection connection = new DatabaseServer().createDatabase();
-             Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery("select id, name, email from demo.client where id = " + id + " and deleted = false")) {
-            if (rs.next()) {
-                return new ClientDto(rs.getLong("id"), rs.getString("name"), rs.getString("email"));
+        try (Connection connection = databaseServer.createDatabase();
+             PreparedStatement stmt = connection.prepareStatement(SELECT_CLIENT_BY_ID)) {
+
+            stmt.setLong(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapToClientDto(rs);
+                }
+                throw new NotFoundException(String.format(CLIENT_NOT_FOUND, id));
             }
-            throw new NotFoundException("Client with id " + id + " not found");
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to load client", e);
+            throw new RuntimeException(ERROR_LOADING_CLIENT, e);
         }
     }
 
@@ -61,37 +86,56 @@ public class ClientsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public ClientDto updateClient(@PathParam("id") Long id, ClientDto clientDto) {
-        try (Connection connection = new DatabaseServer().createDatabase();
-             PreparedStatement stmt = connection.prepareStatement(
-                     "update demo.client set name = ?, email = ? where id = ? and deleted = false")) {
+        try (Connection connection = databaseServer.createDatabase();
+             PreparedStatement stmt = connection.prepareStatement(UPDATE_CLIENT)) {
+
             stmt.setString(1, clientDto.name());
             stmt.setString(2, clientDto.email());
             stmt.setLong(3, id);
-            int updated = stmt.executeUpdate();
-            if (updated == 0) {
-                throw new NotFoundException("Client with id " + id + " not found");
+
+            int updatedRows = stmt.executeUpdate();
+            if (updatedRows == 0) {
+                throw new NotFoundException(String.format(CLIENT_NOT_FOUND, id));
             }
+
             return new ClientDto(id, clientDto.name(), clientDto.email());
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to update client", e);
+            throw new RuntimeException(ERROR_UPDATING_CLIENT, e);
         }
     }
 
     @DELETE
     @Path("/{id}")
     public Response deleteClient(@PathParam("id") Long id) {
-        try (Connection connection = new DatabaseServer().createDatabase();
-             PreparedStatement stmt = connection.prepareStatement(
-                     "update demo.client set deleted = true where id = ? and deleted = false")) {
+        try (Connection connection = databaseServer.createDatabase();
+             PreparedStatement stmt = connection.prepareStatement(SOFT_DELETE_CLIENT)) {
+
             stmt.setLong(1, id);
-            int updated = stmt.executeUpdate();
-            if (updated == 0) {
-                throw new NotFoundException("Client with id " + id + " not found");
+
+            int updatedRows = stmt.executeUpdate();
+            if (updatedRows == 0) {
+                throw new NotFoundException(String.format(CLIENT_NOT_FOUND, id));
             }
+
             return Response.noContent().build();
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to delete client", e);
+            throw new RuntimeException(ERROR_DELETING_CLIENT, e);
         }
+    }
+
+    /**
+     * Maps a ResultSet row to a ClientDto object.
+     *
+     * @param rs the ResultSet positioned at a client row
+     * @return a ClientDto with data from the current row
+     * @throws SQLException if a database access error occurs
+     */
+    private ClientDto mapToClientDto(ResultSet rs) throws SQLException {
+        return new ClientDto(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("email")
+        );
     }
 }
 
