@@ -7,6 +7,8 @@ import static org.hamcrest.Matchers.*;
 import org.example.vtadatabase.infrastructure.persistence.DatabaseServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 @QuarkusTest
 public class VTADatabaseTest {
@@ -169,7 +171,7 @@ public class VTADatabaseTest {
     @Test
     public void deleteClient_removesClientFromGetAllClients() {
         // Use a known client ID from database initialization (11 clients total)
-        Long clientId = 5L;
+        long clientId = 5L;
 
         // Delete the client
         given()
@@ -184,5 +186,50 @@ public class VTADatabaseTest {
                 .statusCode(200)
                 .body("size()", is(10))  // 11 - 1 = 10
                 .body("find { it.id == " + clientId + " }", nullValue());
+    }
+
+    @Test
+    public void createClient_returnsCreated() {
+        given()
+                .contentType("application/json")
+                .body("{\"name\":\"New Client\",\"email\":\"new@example.com\"}")
+                .when().post("/clients")
+                .then()
+                .statusCode(201);
+    }
+
+    @Test
+    public void createClient_returnsCreatedClientData() {
+        given()
+                .contentType("application/json")
+                .body("{\"name\":\"Test Client\",\"email\":\"test@example.com\"}")
+                .when().post("/clients")
+                .then()
+                .statusCode(201)
+                .header("Location", notNullValue())
+                .body("id", notNullValue())
+                .body("name", equalTo("Test Client"))
+                .body("email", equalTo("test@example.com"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "O'Brien, obrien@example.com",
+            "José García, jose.garcia@example.com",
+            "François Müller, francois@example.com",
+            "Владимир Петров, vladimir@example.com",
+            "李明, li.ming@example.com",
+            "Anne-Marie, anne.marie@example.com",
+            "O'Reilly & Sons, oreilly@example.com"
+    })
+    public void createClient_handlesSpecialCharactersInName(String name, String email) {
+        given()
+                .contentType("application/json")
+                .body(String.format("{\"name\":\"%s\",\"email\":\"%s\"}", name, email))
+                .when().post("/clients")
+                .then()
+                .statusCode(201)
+                .body("name", equalTo(name))
+                .body("email", equalTo(email));
     }
 }

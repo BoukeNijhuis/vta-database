@@ -4,6 +4,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -13,6 +14,7 @@ import jakarta.ws.rs.core.Response;
 import org.example.vtadatabase.api.dto.ClientDto;
 import org.example.vtadatabase.infrastructure.persistence.DatabaseServer;
 
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,11 +38,14 @@ public class ClientsResource {
             "UPDATE demo.client SET name = ?, email = ? WHERE id = ? AND deleted = false";
     private static final String SOFT_DELETE_CLIENT =
             "UPDATE demo.client SET deleted = true WHERE id = ? AND deleted = false";
+    private static final String INSERT_CLIENT =
+            "INSERT INTO demo.client (name, email) VALUES (?, ?)";
 
     private static final String ERROR_LOADING_CLIENTS = "Failed to load clients";
     private static final String ERROR_LOADING_CLIENT = "Failed to load client";
     private static final String ERROR_UPDATING_CLIENT = "Failed to update client";
     private static final String ERROR_DELETING_CLIENT = "Failed to delete client";
+    private static final String ERROR_CREATING_CLIENT = "Failed to create client";
     private static final String CLIENT_NOT_FOUND = "Client with id %d not found";
 
     private final DatabaseServer databaseServer = new DatabaseServer();
@@ -120,6 +125,38 @@ public class ClientsResource {
             return Response.noContent().build();
         } catch (SQLException e) {
             throw new RuntimeException(ERROR_DELETING_CLIENT, e);
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createClient(ClientDto clientDto) {
+        try (Connection connection = databaseServer.createDatabase();
+             PreparedStatement stmt = connection.prepareStatement(INSERT_CLIENT, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setString(1, clientDto.name());
+            stmt.setString(2, clientDto.email());
+
+            int insertedRows = stmt.executeUpdate();
+            if (insertedRows == 0) {
+                throw new RuntimeException(ERROR_CREATING_CLIENT);
+            }
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    long id = generatedKeys.getLong(1);
+                    ClientDto createdClient = new ClientDto(id, clientDto.name(), clientDto.email());
+                    return Response
+                            .created(URI.create("/clients/" + id))
+                            .entity(createdClient)
+                            .build();
+                } else {
+                    throw new RuntimeException("Failed to get generated client ID");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(ERROR_CREATING_CLIENT, e);
         }
     }
 
